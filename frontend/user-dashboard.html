@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>User Dashboard - Credit Predictor</title>
+    <link rel="stylesheet" href="style.css"/>
+    <style>
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .user-info { font-weight: bold; color: #333; }
+        .btn-logout {
+            padding: 8px 15px;
+            background: #ff006e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .llm-explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            border-left: 4px solid #ffbe0b;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="navbar">
+            <div class="user-info">Welcome, <span id="user-name">User</span>!</div>
+            <button class="btn-logout" id="logout-btn">Logout</button>
+        </div>
+
+        <div class="header">
+            <h1>Credit Risk Predictor</h1>
+            <p>Assess your loan eligibility instantly</p>
+        </div>
+
+        <div class="container">
+            <div class="form-section">
+                <h2>New Application</h2>
+                <form id="predict-form">
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" min="18" max="100" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="education">Education</label>
+                        <select id="education" required>
+                            <option value="High School">High School</option>
+                            <option value="Bachelor">Bachelor</option>
+                            <option value="Master">Master</option>
+                            <option value="PhD">PhD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="income">Annual Income ($)</label>
+                        <input type="number" id="income" min="0" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="debt">Total Debt ($)</label>
+                        <input type="number" id="debt" min="0" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="credit_score">Credit Score</label>
+                        <input type="number" id="credit_score" min="300" max="850" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="loan_amount">Loan Amount ($)</label>
+                        <input type="number" id="loan_amount" min="0" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="loan_term">Loan Term (Months)</label>
+                        <input type="number" id="loan_term" min="1" max="360" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="num_credit_cards">Number of Credit Cards</label>
+                        <input type="number" id="num_credit_cards" min="0" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="employment_status">Employment Status</label>
+                        <select id="employment_status" required>
+                            <option value="Employed">Employed</option>
+                            <option value="Self-Employed">Self-Employed</option>
+                            <option value="Unemployed">Unemployed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_history">Payment History</label>
+                        <select id="payment_history" required>
+                            <option value="Good">Good</option>
+                            <option value="Average">Average</option>
+                            <option value="Bad">Bad</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="residence_type">Residence Type</label>
+                        <select id="residence_type" required>
+                            <option value="Owned">Owned</option>
+                            <option value="Rented">Rented</option>
+                            <option value="Mortgaged">Mortgaged</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="marital_status">Marital Status</label>
+                        <select id="marital_status" required>
+                            <option value="Single">Single</option>
+                            <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-predict">Analyze Risk</button>
+                </form>
+            </div>
+
+            <div id="result" class="result-section hidden"></div>
+        </div>
+
+        <div class="history-section">
+            <h2>My History</h2>
+            <button id="load-history" class="btn-history">Refresh History</button>
+            <div class="table-wrapper">
+                <table id="history-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th><th>Amount</th><th>Score</th><th>Risk</th><th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="customer.js"></script>
+</body>
+</html>

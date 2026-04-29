@@ -1,0 +1,13 @@
+# Command 1: Start Flask ML API Server (Terminal 1)
+cd ml && source venv/bin/activate && python3 app.py
+
+# Command 2: Start Spring Boot Backend Server (Terminal 2) - Wait 2 seconds after Command 1
+# Note: Run 'mvn clean package' first to generate the jar
+sleep 2 && java -jar target/credit-score-0.0.1-SNAPSHOT.jar
+
+# Command 3: Open Frontend in Browser
+# You can also use the local server started by start_all.sh (http://localhost:3000)
+xdg-open "frontend/index.html"
+
+# Command 4: Close All Services (when done)
+pkill -f "python3 app.py" && pkill -f "java -jar"

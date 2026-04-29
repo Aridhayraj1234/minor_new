@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth - Credit Card Risk Prediction</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body">
+    <div class="auth-wrapper">
+        <div class="auth-header">
+            <h1>Credit Risk Predictor</h1>
+            <p>Welcome. Please sign in to continue.</p>
+        </div>
+        <div class="auth-container">
+            <div class="auth-box">
+                <h2>Login</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Login</button>
+                </form>
+                <div id="login-error" class="error-message hidden"></div>
+                <p style="margin-top: 14px; text-align: center;">
+                    New here? <a href="register.html">Create an account</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <script src="auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+# Logs
+*.log
+ml/*.log
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.env
+
+# Web
+node_modules/
+.vscode/
+
+# Java/Maven
+target/
+*.jar
+*.war
+*.ear
+*.class
+.mvn/
+.factorypath
+.project
+.settings/
+.classpath
