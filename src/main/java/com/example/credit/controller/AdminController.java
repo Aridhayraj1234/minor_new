@@ -48,8 +48,23 @@ public class AdminController {
     }
 
     @GetMapping("/applications")
-    public ResponseEntity<List<CreditApplication>> getAllApplications() {
-        return ResponseEntity.ok(applicationRepository.findAll());
+    public ResponseEntity<List<Map<String, Object>>> getAllApplications() {
+        List<Map<String, Object>> apps = applicationRepository.findAll().stream().map(app -> {
+            Map<String, Object> dto = new HashMap<>();
+            dto.put("id", app.getId());
+            dto.put("userId", app.getUser() != null ? app.getUser().getId() : null);
+            dto.put("userName", app.getUser() != null ? app.getUser().getName() : "N/A");
+            dto.put("age", app.getAge());
+            dto.put("income", app.getIncome());
+            dto.put("creditScore", app.getCreditScore());
+            dto.put("loanAmount", app.getLoanAmount());
+            dto.put("predictionResult", app.getPredictionResult());
+            dto.put("riskScore", app.getRiskScore());
+            dto.put("llmExplanation", app.getLlmExplanation());
+            dto.put("createdAt", app.getCreatedAt());
+            return dto;
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(apps);
     }
 
     @PutMapping("/users/{id}/role")

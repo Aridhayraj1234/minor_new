@@ -36,50 +36,111 @@
     </style>
 </head>
 <body>
-    <div class="main-container">
-        <div class="navbar">
-            <div class="user-info">Welcome, <span id="admin-name">Admin</span>! (Administrator)</div>
-            <button class="btn-logout" id="logout-btn">Logout</button>
-        </div>
-
-        <div class="header">
-            <h1>Admin Dashboard</h1>
-            <p>System Overview & All Applications</p>
-        </div>
-
-        <div class="admin-section">
-            <h2>Registered Users</h2>
-            <div class="table-wrapper">
-                <table id="users-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+    <div class="admin-layout">
+        <div class="sidebar">
+            <h2>Credit Admin</h2>
+            <div class="sidebar-nav">
+                <a href="#" class="active">Overview</a>
+                <a href="#users-section">Users</a>
+                <a href="#applications-section">History</a>
+            </div>
+            <div style="margin-top: auto;">
+                <button class="btn-logout" id="logout-btn" style="width: 100%;">Logout</button>
             </div>
         </div>
 
-        <div class="admin-section">
-            <h2>Usage Summary</h2>
-            <pre id="usage-summary">Loading...</pre>
-        </div>
+        <div class="admin-main">
+            <div class="navbar" style="margin-bottom: 30px;">
+                <div class="user-info">Welcome, <span id="admin-name">Admin</span>!</div>
+                <div>Administrator Dashboard</div>
+            </div>
 
-        <div class="admin-section">
-            <h2>All Credit Applications</h2>
-            <div class="table-wrapper">
-                <table id="apps-table">
-                    <thead>
-                        <tr>
-                            <th>User ID</th><th>Time</th><th>Amount</th><th>Score</th><th>Risk</th><th>Details</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="label">Total Users</span>
+                    <span class="value" id="stat-total-users">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="label">Total Applications</span>
+                    <span class="value" id="stat-total-apps">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="label">High Risk Cases</span>
+                    <span class="value" id="stat-high-risk" style="color: var(--danger-color);">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="label">System Status</span>
+                    <span class="value" style="color: var(--success-color); font-size: 1.2rem;">ONLINE</span>
+                </div>
+            </div>
+
+            <div id="users-section" class="admin-section">
+                <h2>Registered Users</h2>
+                <div class="table-wrapper">
+                    <table id="users-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="applications-section" class="admin-section">
+                <h2>Credit Entry History</h2>
+                <div class="search-bar">
+                    <input type="text" id="history-search" placeholder="Search by User ID or Amount..." class="form-control" />
+                </div>
+                <div class="table-wrapper">
+                    <table id="apps-table">
+                        <thead>
+                            <tr>
+                                <th>User ID</th><th>Time</th><th>Amount</th><th>Score</th><th>Risk</th><th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-widget">
+        <button class="chat-button" id="chat-toggle">💬</button>
+        <div class="chat-window" id="chat-window">
+            <div class="chat-header">
+                <span>AI Support Bot</span>
+                <button id="chat-close" style="background:none; border:none; color:white; cursor:pointer;">✕</button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot">Hello! I'm your AI assistant. How can I help you manage the system today?</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Type your message..." />
+                <button id="chat-send">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Report Modal -->
+    <div id="report-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>AI Risk Assessment Report</h3>
+                <button id="close-modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <pre id="report-text"></pre>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="print-report">Download PDF</button>
+            </div>
+        </div>
+    </div>
+
     <script src="admin.js"></script>
 </body>
 </html>

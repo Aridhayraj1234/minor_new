@@ -1,26 +1,25 @@
-# Logs
-*.log
-ml/*.log
-
-# Python
-.venv/
-venv/
-__pycache__/
-*.pyc
-.env
-
-# Web
-node_modules/
-.vscode/
-
-# Java/Maven
 target/
+*.class
+*.log
 *.jar
 *.war
 *.ear
-*.class
+*.zip
+*.tar.gz
+*.rar
 .mvn/
-.factorypath
-.project
-.settings/
-.classpath
+ml/__pycache__/
+ml/*.pyc
+ml/venv/
+ml/.env
+__pycache__/
+.env
+*.iml
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+spring.log
+spring_error.log
+flask.log
+test_history.ps1

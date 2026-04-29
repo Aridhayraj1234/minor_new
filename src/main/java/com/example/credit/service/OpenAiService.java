@@ -91,18 +91,37 @@ public class OpenAiService {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("📊 Risk Score: ").append(String.format("%.1f", score * 100)).append("% | Level: ").append(prediction).append("\n\n");
+        sb.append("📋 AI RISK ANALYSIS REPORT\n");
+        sb.append("==========================\n\n");
+        
+        sb.append("📊 VERDICT: ");
+        if (prediction.equalsIgnoreCase("LOW")) {
+            sb.append("✅ RECOMMEND APPROVAL\n");
+        } else if (prediction.equalsIgnoreCase("MEDIUM")) {
+            sb.append("⚠️ RECOMMEND MANUAL REVIEW\n");
+        } else {
+            sb.append("❌ RECOMMEND REJECTION\n");
+        }
+        
+        sb.append("🔢 Risk Score: ").append(String.format("%.1f", score * 100)).append("%\n\n");
 
         if (!strengths.isEmpty()) {
-            sb.append("✅ Strengths: ").append(String.join(", ", strengths)).append(".\n\n");
+            sb.append("📈 PROS (Strengths):\n");
+            for (String s : strengths) sb.append("- ").append(s).append("\n");
+            sb.append("\n");
         }
+        
         if (!riskFactors.isEmpty()) {
-            sb.append("⚠️ Risk Factors: ").append(String.join("; ", riskFactors)).append(".\n\n");
+            sb.append("📉 CONS (Risk Factors):\n");
+            for (String r : riskFactors) sb.append("- ").append(r).append("\n");
+            sb.append("\n");
         }
+        
         if (!recommendations.isEmpty()) {
-            sb.append("💡 Recommendations: (1) ").append(String.join(". (2) ", recommendations)).append(".");
+            sb.append("💡 ADVISORY / RECOMMENDATIONS:\n");
+            for (String rec : recommendations) sb.append("- ").append(rec).append("\n");
         } else {
-            sb.append("💡 Recommendation: Strong profile. Standard approval process may proceed.");
+            sb.append("💡 ADVISORY: Profile is stable. Standard proceeding is recommended.");
         }
 
         return sb.toString();
@@ -134,14 +153,21 @@ public class OpenAiService {
 
     private String callOpenAi(String userData, String prediction, Double score) {
         String url = "https://api.openai.com/v1/chat/completions";
-        String prompt = "You are a financial risk analyst.\n\nUser Data: " + userData +
-                "\nRisk Level: " + prediction + "\nRisk Probability: " + score +
-                "\n\nProvide a professional 3-4 sentence analysis with actionable advice.";
+        String prompt = "You are a professional financial risk analyst.\n\n" +
+                "User Data: " + userData + "\n" +
+                "Risk Level: " + prediction + "\n" +
+                "Risk Probability: " + score + "\n\n" +
+                "Generate a structured report with the following sections:\n" +
+                "1. 📊 VERDICT: (Recommend Approval/Review/Rejection)\n" +
+                "2. 📈 PROS: (List 2-3 key strengths)\n" +
+                "3. 📉 CONS: (List 2-3 key risk factors)\n" +
+                "4. 💡 ADVISORY: (Final professional advice)\n" +
+                "Use emojis and professional language.";
 
         Map<String, Object> body = new HashMap<>();
         body.put("model", model);
         body.put("messages", List.of(
-                Map.of("role", "system", "content", "You are a financial risk analyst. Be concise and professional."),
+                Map.of("role", "system", "content", "You are a expert financial analyst. Provide structured, clear reports."),
                 Map.of("role", "user", "content", prompt)
         ));
 
@@ -163,5 +189,75 @@ public class OpenAiService {
             System.err.println("OpenAI API Error: " + e.getMessage());
         }
         return generateSmartSimulation(userData, prediction, score);
+    }
+
+    public String chat(String message) {
+        if (apiKey == null || apiKey.isBlank() || "your_default_key_here".equals(apiKey)) {
+            return simulateChat(message);
+        }
+        
+        String url = "https://api.openai.com/v1/chat/completions";
+        Map<String, Object> body = new HashMap<>();
+        body.put("model", model);
+        body.put("messages", List.of(
+                Map.of("role", "system", "content", "You are a helpful assistant for a Credit Risk Prediction system. Help users with system navigation, credit score tips, or general banking inquiries."),
+                Map.of("role", "user", "content", message)
+        ));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + apiKey);
+        headers.set("Content-Type", "application/json");
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+
+        try {
+            ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                List<Map<String, Object>> choices = (List<Map<String, Object>>) response.getBody().get("choices");
+                if (choices != null && !choices.isEmpty()) {
+                    Map<String, Object> responseMessage = (Map<String, Object>) choices.get(0).get("message");
+                    return (String) responseMessage.get("content");
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("OpenAI Chat Error: " + e.getMessage());
+        }
+        return simulateChat(message);
+    }
+
+    private String simulateChat(String message) {
+        String msg = message.toLowerCase();
+        
+        if (msg.contains("hello") || msg.contains("hi") || msg.contains("hey")) 
+            return "Hello! I'm your Credit Risk Assistant. How can I help you navigate the system or understand credit risk today?";
+        
+        if (msg.contains("credit score") || msg.contains("score")) 
+            return "A credit score is a numerical expression of a person's creditworthiness. Higher scores (above 700) generally lead to better loan terms and lower interest rates.";
+            
+        if (msg.contains("risk") || msg.contains("level")) 
+            return "We categorize risk into LOW, MEDIUM, and HIGH. LOW risk usually means a high probability of approval, while HIGH risk indicates significant concerns that may lead to rejection.";
+            
+        if (msg.contains("admin") || msg.contains("dashboard") || msg.contains("manage")) 
+            return "The Admin Dashboard allows you to monitor all registered users, review the complete history of credit applications, and adjust user roles.";
+            
+        if (msg.contains("loan") || msg.contains("amount") || msg.contains("debt")) 
+            return "Loan amounts and existing debt are critical factors in our ML model. A high debt-to-income ratio is one of the most common reasons for a 'HIGH' risk classification.";
+            
+        if (msg.contains("history") || msg.contains("entries"))
+            return "You can view the full history of all predictions in the 'Credit Entry History' section. Use the search bar there to find specific users or transactions.";
+
+        if (msg.contains("thank") || msg.contains("thanks"))
+            return "You're very welcome! Let me know if you have any other questions.";
+
+        if (msg.contains("help") || msg.contains("how"))
+            return "I can help you understand how our risk scores are calculated, explain the different risk levels, or help you find information in the dashboard. What would you like to know?";
+
+        String[] defaults = {
+            "That's a great question! While I'm in simulation mode, I can tell you that our system uses 13 different financial factors to predict credit risk accurately.",
+            "I'm not quite sure about that specific query, but I can assist with questions about credit scores, risk factors, or using the admin panel.",
+            "Interesting! Did you know that keeping your credit utilization below 30% is one of the best ways to maintain a healthy credit score?",
+            "I'm here to help! Try asking about 'risk levels', 'credit scores', or how to 'manage users'."
+        };
+        int index = Math.abs(message.hashCode()) % defaults.length;
+        return defaults[index];
     }
 }
